@@ -59,11 +59,11 @@ Critically, the canvas length $L^*$, anchor definitions, and `CAT`/`FREE` layout
 
 ```text
 Algorithm 1: Structural Analysis Pipeline
-================================================================================
+--------------------------------------------------------------------------------
 Input:  Payload set P
         Thresholds: support (θ_sup = 0.3), std_dev (θ_std = 3.0)
 Output: Frozen Layout L, Target Lengths L*
---------------------------------------------------------------------------------
+
 
 1:  // Stage 1: Anchor Mining
 2:  candidates = []
@@ -89,13 +89,14 @@ Output: Frozen Layout L, Target Lengths L*
 20: Compute smoothed entropy profile H
 21: L = PELT(H)   // Segment into CAT/FREE regions
 22: return L
-================================================================================
+--------------------------------------------------------------------------------
 ```
 
 
 ![The Structural Analysis Pipeline](structural_analysis_figure.png)
-**Fig. 3: The Structural Analysis and Alignment Pipeline.**
- **1. Anchor-Based Segmentation:** Stable $k$-mers ($A_{head}$, $A_{tail}$) with high support and low positional variance partition payloads into variable-length regions. 
+**Fig. 1: The Structural Analysis and Alignment Pipeline.**
+
+**1. Anchor-Based Segmentation:** Stable $k$-mers ($A_{head}$, $A_{tail}$) with high support and low positional variance partition payloads into variable-length regions. 
 **2. Non-Interpolative Resampling:** Variable regions are mapped to a fixed length $L^*$ using a nearest-neighbor rounding formula (Eq. 1). The example highlights how source bytes are selected without interpolation, preserving original values. 
 **3. Entropy Profiling & Layout Inference:** The entropy profile $H(t)$ defines `CAT` (structural) and `FREE` (variable) stripes. This layout is frozen after training. 
 **4. Test-Time Alignment & Fallback:** Misalignments on unseen test data do not break the model; they manifest as `[ESC]` sequences in rigid `CAT` stripes or as increased Out-of-Support Byte Rate (OSBR) in `FREE` regions.
