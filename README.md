@@ -100,3 +100,13 @@ Output: Frozen Layout L, Target Lengths L*
 **2. Non-Interpolative Resampling:** Variable regions are mapped to a fixed length $L^*$ using a nearest-neighbor rounding formula (Eq. 1). The example highlights how source bytes are selected without interpolation, preserving original values. 
 **3. Entropy Profiling & Layout Inference:** The entropy profile $H(t)$ defines `CAT` (structural) and `FREE` (variable) stripes. This layout is frozen after training. 
 **4. Test-Time Alignment & Fallback:** Misalignments on unseen test data do not break the model; they manifest as `[ESC]` sequences in rigid `CAT` stripes or as increased Out-of-Support Byte Rate (OSBR) in `FREE` regions.
+
+
+
+
+# 3. Supplementary Experiment: Discriminator-Based Validation
+To assess the structural validity of PRGen-generated payloads in the absence of proprietary device emulators, we conducted a task-facing discriminator evaluation. This experiment was designed to determine whether a standard machine learning classifier could distinguish between real-world traffic and payloads synthesized by PRGen. We constructed a strictly balanced binary classification dataset consisting of 10,000 ground-truth payloads sampled from the held-out test set and 10,000 generated payloads conditioned on the corresponding interaction contexts.
+
+We trained a Random Forest classifier (100 estimators) to differentiate between the two classes. To ensure a rigorous evaluation, we employed comprehensive feature engineering using byte-level n-grams (ranging from 1-gram to 3-gram) vectorized via TF-IDF, capturing both atomic byte distributions and local protocol patterns. The model was evaluated using 5-fold cross-validation.
+
+The discriminator achieved an F1-score of 0.54, a result marginally above the random-guess baseline of 0.50. This near-random performance indicates that even with rich sequential features, the classifier failed to find consistent decision boundaries to separate real from generated samples. These results confirm that PRGen successfully models the implicit grammar of proprietary protocols, producing payloads that possess the same structural and statistical characteristics as genuine traffic.
